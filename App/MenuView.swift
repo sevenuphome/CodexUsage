@@ -23,6 +23,11 @@ struct MenuView: View {
                 Text("Snapshots update while Codex CLI is in use")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
+                if let synced = state.cloudSyncedAt {
+                    (Text("iCloud synced ") + Text(synced, style: .relative) + Text(" ago"))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             } else {
                 Text("No Codex sessions found — run codex once, then usage shows up here.")
                     .font(.callout)

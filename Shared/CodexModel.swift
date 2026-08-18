@@ -1,13 +1,13 @@
 import Foundation
 
-struct CodexWindow: Identifiable {
+struct CodexWindow: Identifiable, Codable {
     let id: String
     let name: String
     let percent: Double
     let resetsAt: Date?
 }
 
-struct CodexSnapshot {
+struct CodexSnapshot: Codable {
     let windows: [CodexWindow]
     /// When Codex recorded this snapshot — data is only as fresh as the
     /// last Codex CLI session.
@@ -21,7 +21,7 @@ struct CodexSnapshot {
 enum CodexReader {
 
     static var sessionsRoot: URL {
-        FileManager.default.homeDirectoryForCurrentUser
+        URL(fileURLWithPath: NSHomeDirectory())
             .appendingPathComponent(".codex/sessions")
     }
 

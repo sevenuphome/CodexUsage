@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.ekkasit
   deploymentTarget:
     macOS: "14.0"
+    iOS: "17.0"
   createIntermediateGroups: true
 settings:
   base:
@@ -10,8 +11,8 @@ settings:
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "5.0"
     ENABLE_HARDENED_RUNTIME: NO
-    MARKETING_VERSION: "1.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "1.1"
+    CURRENT_PROJECT_VERSION: "2"
 targets:
   CodexUsage:
     type: application
@@ -25,6 +26,14 @@ targets:
         CFBundleDisplayName: Codex Usage
         LSUIElement: true
         LSApplicationCategoryType: public.app-category.developer-tools
+    entitlements:
+      path: App/CodexUsage.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.ekkasit.CodexUsage
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.icloud-container-environment: Development
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsage
@@ -47,8 +56,63 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsage.Widget
+  CodexUsageiOS:
+    type: application
+    platform: iOS
+    sources:
+      - iOS/App
+      - Shared
+    info:
+      path: iOS/App/Info.plist
+      properties:
+        CFBundleDisplayName: Codex Usage
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    entitlements:
+      path: iOS/App/CodexUsageiOS.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.ekkasit.CodexUsage
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.icloud-container-environment: Development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsageiOS
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - target: CodexUsageiOSWidget
+        embed: true
+  CodexUsageiOSWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - iOS/Widget
+      - Shared
+    info:
+      path: iOS/Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Codex Usage Widget
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: iOS/Widget/CodexUsageiOSWidget.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.ekkasit.CodexUsage
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.icloud-container-environment: Development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsageiOS.Widget
 schemes:
   CodexUsage:
     build:
       targets:
         CodexUsage: all
+  CodexUsageiOS:
+    build:
+      targets:
+        CodexUsageiOS: all

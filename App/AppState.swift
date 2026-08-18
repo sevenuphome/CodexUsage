@@ -17,8 +17,15 @@ final class AppState: ObservableObject {
         }
     }
 
+    @Published var cloudSyncedAt: Date?
+
     private var timer: Timer?
     private var lastSignature = ""
+
+    private var cloudSyncNeeded: Bool {
+        guard let synced = cloudSyncedAt else { return true }
+        return Date().timeIntervalSince(synced) > 30 * 60
+    }
 
     init() {
         refresh()
@@ -43,6 +50,23 @@ final class AppState: ObservableObject {
         if signature != lastSignature {
             lastSignature = signature
             WidgetCenter.shared.reloadAllTimelines()
+            publishToCloud()
+        } else if cloudSyncNeeded {
+            // Retry until the first publish lands, then heartbeat every
+            // 30 min so the iPhone's staleness display stays honest.
+            publishToCloud()
+        }
+    }
+
+    private func publishToCloud() {
+        guard let snapshot else { return }
+        Task { [weak self] in
+            do {
+                try await CodexCloud.publish(snapshot)
+                await MainActor.run { self?.cloudSyncedAt = Date() }
+            } catch {
+                NSLog("CodexCloud publish FAILED: \(error)")
+            }
         }
     }
 }
