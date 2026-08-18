@@ -64,6 +64,7 @@ final class AppState: ObservableObject {
             do {
                 try await CodexCloud.publish(snapshot)
                 await MainActor.run { self?.cloudSyncedAt = Date() }
+                NSLog("CodexCloud publish OK")
             } catch {
                 NSLog("CodexCloud publish FAILED: \(error)")
             }
