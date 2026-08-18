@@ -53,6 +53,12 @@ targets:
         CFBundleDisplayName: Codex Usage Widget
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widget/CodexUsageWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.temporary-exception.files.home-relative-path.read-only:
+          - /.codex/
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsage.Widget

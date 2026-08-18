@@ -20,9 +20,18 @@ struct CodexSnapshot: Codable {
 /// Local files only — no network, no credentials.
 enum CodexReader {
 
+    /// Real home directory — inside the sandboxed widget, NSHomeDirectory()
+    /// is the container home; the sandbox exception covers ~/.codex/ in the
+    /// user's real home.
+    static var realHome: URL {
+        if let pw = getpwuid(getuid()), let dir = pw.pointee.pw_dir {
+            return URL(fileURLWithPath: String(cString: dir))
+        }
+        return URL(fileURLWithPath: NSHomeDirectory())
+    }
+
     static var sessionsRoot: URL {
-        URL(fileURLWithPath: NSHomeDirectory())
-            .appendingPathComponent(".codex/sessions")
+        realHome.appendingPathComponent(".codex/sessions")
     }
 
     static func latest() -> CodexSnapshot? {
