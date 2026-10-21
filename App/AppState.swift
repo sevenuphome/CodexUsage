@@ -21,6 +21,7 @@ final class AppState: ObservableObject {
 
     private var timer: Timer?
     private var lastSignature = ""
+    private let dailyUsageAlert = DailyUsageAlert()
 
     private var cloudSyncNeeded: Bool {
         guard let synced = cloudSyncedAt else { return true }
@@ -28,6 +29,7 @@ final class AppState: ObservableObject {
     }
 
     init() {
+        dailyUsageAlert.requestAuthorization()
         refresh()
         timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.refresh() }
@@ -43,6 +45,9 @@ final class AppState: ObservableObject {
         // Local file scan — cheap enough to run every tick
         let latest = CodexReader.latest()
         snapshot = latest
+        if let latest {
+            dailyUsageAlert.evaluate(latest)
+        }
 
         let signature = latest?.windows
             .map { "\($0.id):\(Int($0.percent))" }

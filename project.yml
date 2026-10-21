@@ -36,6 +36,7 @@ targets:
         com.apple.developer.icloud-container-environment: Development
     settings:
       base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsage
         PRODUCT_NAME: CodexUsage
     dependencies:
@@ -62,6 +63,17 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsage.Widget
+  CodexUsageTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests
+      - App/DailyUsageAlert.swift
+      - App/DailyUsageTracker.swift
+      - Shared/CodexModel.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ekkasit.CodexUsage.Tests
   CodexUsageiOS:
     type: application
     platform: iOS
@@ -118,6 +130,9 @@ schemes:
     build:
       targets:
         CodexUsage: all
+    test:
+      targets:
+        - CodexUsageTests
   CodexUsageiOS:
     build:
       targets:
